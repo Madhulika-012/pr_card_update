@@ -67,26 +67,6 @@ function App() {
   const parentTargetOrigin = useRef('*')
   const hasSentApprovalMessage = useRef(false)
 
-  const sendMessageToGrandparent = (prId, status) => {
-    console.log('Sending PR metadata to grandparent:', { prId, status })
-    try {
-      const targetWindow = window.parent?.parent?.parent
-      if (!targetWindow || targetWindow === window) return
-      targetWindow.postMessage(
-        {
-          type: 'ui_component_user_message',
-          message: '',
-          llmMessage: 'JSON.stringify({ pr_id: prId, status })',
-          data: { pr_id: prId, status },
-        },
-        '*'
-      )
-      console.log('Message with PR metadata sent to grandparent successfully')
-    } catch (error) {
-      console.error('Error sending message to grandparent:', error)
-    }
-  }
-
   useEffect(() => {
     function handleMessage(event) {
       if (event.data?.type === 'ui_component_render') {
@@ -137,6 +117,26 @@ function App() {
   ]
 
   const isApproved = prDetails.status.toLowerCase() === 'pr approved'
+
+  const sendMessageToGrandparent = (prId, status) => {
+    console.log('Sending PR metadata to grandparent:', { prId, status })
+    try {
+      const targetWindow = window.parent?.parent?.parent
+      if (!targetWindow || targetWindow === window) return
+      targetWindow.postMessage(
+        {
+          type: 'ui_component_user_message',
+          message: 'PR Updated',
+          llmMessage: JSON.stringify({ pr_id: prId, status }),
+          data: { pr_id: prId, status },
+        },
+        '*'
+      )
+      console.log('Message with PR metadata sent to grandparent successfully')
+    } catch (error) {
+      console.error('Error sending message to grandparent:', error)
+    }
+  }
 
   return (
     <ThemeProvider theme={theme}>
