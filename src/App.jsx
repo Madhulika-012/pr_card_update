@@ -125,7 +125,7 @@ function App() {
       if (!targetWindow || targetWindow === window) return
       targetWindow.postMessage(
         {
-          type: 'ui_component_user_message',
+          type: 'ui_component_call_message',
           message: 'PR Updated',
           llmMessage: JSON.stringify({ pr_id: prId, status }),
           data: { pr_id: prId, status },
